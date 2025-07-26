@@ -85,7 +85,7 @@ export class CategoriesService {
       throw new NotFoundException("Dữ liệu không tồn tại hoặc đã bị xóa");
     }
     await this.categoryModel.updateOne(
-      { id },
+      { _id: id },
       {
         deletedBy: {
           _id: user._id,

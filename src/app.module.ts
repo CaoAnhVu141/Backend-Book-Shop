@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { FilesModule } from './files/files.module';
 import { BooksModule } from './books/books.module';
 import { CategoriesModule } from './categories/categories.module';
+import { AuthorsModule } from './authors/authors.module';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { CategoriesModule } from './categories/categories.module';
       isGlobal: true
     }),
 
-    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule],
+    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule],
   controllers: [AppController],
   providers: [AppService,
   //   {
