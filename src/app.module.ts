@@ -8,6 +8,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 import { APP_GUARD } from '@nestjs/core';
 import { FilesModule } from './files/files.module';
+import { BooksModule } from './books/books.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { FilesModule } from './files/files.module';
       isGlobal: true
     }),
 
-    AuthModule, UsersModule, FilesModule],
+    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule],
   controllers: [AppController],
   providers: [AppService,
   //   {
