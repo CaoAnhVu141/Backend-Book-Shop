@@ -11,6 +11,9 @@ import { FilesModule } from './files/files.module';
 import { BooksModule } from './books/books.module';
 import { CategoriesModule } from './categories/categories.module';
 import { AuthorsModule } from './authors/authors.module';
+import { OrdersModule } from './orders/orders.module';
+import { OrderItemsModule } from './order-items/order-items.module';
+import { OrderHistoryModule } from './order-history/order-history.module';
 
 @Module({
   imports: [
@@ -30,7 +33,7 @@ import { AuthorsModule } from './authors/authors.module';
       isGlobal: true
     }),
 
-    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule],
+    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule],
   controllers: [AppController],
   providers: [AppService,
   //   {
