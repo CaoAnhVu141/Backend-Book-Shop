@@ -36,6 +36,7 @@ export class AuthController {
   }
 
   @Get('/account')
+  @ResponseMessage("Get user information")
   handleAccount(@User() user: IUser)
   {
     return {user};

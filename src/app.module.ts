@@ -14,6 +14,7 @@ import { AuthorsModule } from './authors/authors.module';
 import { OrdersModule } from './orders/orders.module';
 import { OrderItemsModule } from './order-items/order-items.module';
 import { OrderHistoryModule } from './order-history/order-history.module';
+import { FavoriteModule } from './favorite/favorite.module';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { OrderHistoryModule } from './order-history/order-history.module';
       isGlobal: true
     }),
 
-    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule],
+    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule],
   controllers: [AppController],
   providers: [AppService,
   //   {
