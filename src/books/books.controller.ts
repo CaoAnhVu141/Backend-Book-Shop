@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from 'src/users/users.interface';
 
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Post()
-  create(@Body() createBookDto: CreateBookDto) {
-    return this.booksService.create(createBookDto);
+  @ResponseMessage("Created book success")
+  createBookController(@Body() createBookDto: CreateBookDto, @User() user: IUser) {
+    return this.booksService.createBookService(createBookDto,user);
   }
 
   @Get()
-  findAll() {
-    return this.booksService.findAll();
+  @ResponseMessage("Get book success")
+  getAllBookController(@Query("current") currentPage: string, @Query("pageSize") limit: string, @Query() qs: string) {
+    return this.booksService.getAllBookService(+currentPage,+limit,qs);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.booksService.findOne(+id);
+  @ResponseMessage("Get one book success")
+  getOneBookController(@Param('id') id: string) {
+    return this.booksService.getOneBookService(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.booksService.update(+id, updateBookDto);
+  @ResponseMessage("Update book success")
+  updateBookController(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto,@User() user: IUser) {
+    return this.booksService.updateBookService(id, updateBookDto,user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.booksService.remove(+id);
+  @ResponseMessage("Delete book success")
+  removeBookController(@Param('id') id: string, @User() user: IUser) {
+    return this.booksService.removeBookService(id,user);
   }
 }
