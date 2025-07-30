@@ -26,6 +26,9 @@ export class User {
   @Prop()
   avatar: string;
 
+  @Prop()
+  role: string;
+
   @Prop({ type: Object })
     createdBy: {
         _id: mongoose.Schema.Types.ObjectId;

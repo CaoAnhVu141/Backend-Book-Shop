@@ -15,6 +15,7 @@ import { OrdersModule } from './orders/orders.module';
 import { OrderItemsModule } from './order-items/order-items.module';
 import { OrderHistoryModule } from './order-history/order-history.module';
 import { FavoriteModule } from './favorite/favorite.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { FavoriteModule } from './favorite/favorite.module';
       isGlobal: true
     }),
 
-    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule],
+    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule, RolesModule],
   controllers: [AppController],
   providers: [AppService,
   //   {
