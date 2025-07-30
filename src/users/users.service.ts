@@ -76,9 +76,9 @@ export class UsersService {
       return await this.userModel.findById(id);
   }
 
-  findOneByUsername(username: string) {
+  findOneByUsername(email: string) {
     return this.userModel.findOne({
-      email: username,
+      email: email,
     });
   }
 
