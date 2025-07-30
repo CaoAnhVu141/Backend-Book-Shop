@@ -1,5 +1,6 @@
-import { IsInt, IsNotEmpty } from "class-validator";
+import { IsInt, IsMongoId, IsNotEmpty } from "class-validator";
 import { Type } from 'class-transformer';
+import mongoose from "mongoose";
 
 export class CreateUserDto {
 
@@ -20,6 +21,9 @@ export class CreateUserDto {
 
     avatar: string;
 
+    @IsMongoId({message: 'Phải có định dạng là MonggoId'})
+    role: mongoose.Schema.Types.ObjectId;
+
 
 }
 
@@ -31,4 +35,7 @@ export class RegisterUserDto {
     email: string;
     @IsNotEmpty({message: "Password không được để trống"})
     password: string;
+
+    
+
 }

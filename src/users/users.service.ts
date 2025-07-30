@@ -27,7 +27,7 @@ export class UsersService {
 
   async createNewService(createUserDto: CreateUserDto) {
     const {
-      name, email, password, age, gender,avatar
+      name, email, password, age, gender,avatar, role
     } = createUserDto;
 
     const checkEmail = await this.userModel.findOne({email});
@@ -38,7 +38,7 @@ export class UsersService {
     const handlePassword = this.getHashPassword(password);
 
     return await this.userModel.create({
-      name: name, email: email, password: handlePassword, age: age, gender: gender, avatar: avatar,
+      name: name, email: email, password: handlePassword, age: age, gender: gender, avatar: avatar, role: role
     });
   }
 
@@ -88,10 +88,10 @@ export class UsersService {
     if (!userData || userData.isDeleted) {
       throw new NotFoundException("Tài khoản không tồn tại");
     }
-    const userEmail = await this.userModel.findOne({email});
-    if(userEmail){
-        throw new ConflictException("Email đã tồn tại trong hệ thống");
-    }
+    // const userEmail = await this.userModel.findOne({email});
+    // if(userEmail){
+    //     throw new ConflictException("Email đã tồn tại trong hệ thống");
+    // }
    return await this.userModel.updateOne({
       _id: id
     }, {

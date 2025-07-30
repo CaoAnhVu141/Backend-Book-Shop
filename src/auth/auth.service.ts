@@ -30,13 +30,16 @@ export class AuthService {
   }
 
   async loginData(user: IUser, response: Response) {
-    const { _id, name, email } = user;
+    const { _id, name, email, role } = user;
+    const roleName = role?.name;
+    console.log("check login: ", roleName);
     const payload = {
       sub: "token login",
       iss: "from server",
       _id,
       name,
       email,
+      role
     };
     const refresh_token = this.createRefreshToken(payload);
 
@@ -51,7 +54,7 @@ export class AuthService {
 
     return {
       user: {
-        _id, name, email,
+        _id, name, email, role
       },
       access_token: this.jwtService.sign(payload),
     };
@@ -73,13 +76,14 @@ export class AuthService {
       })
       let user = await this.usersService.findUserByToken(refreshToken);
       if (user) {
-        const { _id, name, email } = user;
+        const { _id, name, email, role } = user;
         const payload = {
           sub: "token refresh",
           iss: "from server",
           _id,
           name,
           email,
+          role
         };
 
         const refresh_token = this.createRefreshToken(payload);
@@ -100,6 +104,7 @@ export class AuthService {
             _id,
             name,
             email,
+            role
           }
         };
       }
