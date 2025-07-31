@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -25,7 +25,7 @@ export class UsersService {
     return hash;
   }
 
-  async createNewService(createUserDto: CreateUserDto) {
+  async createNewService(createUserDto: CreateUserDto, user: IUser) {
     const {
       name, email, password, age, gender,avatar, role
     } = createUserDto;
@@ -34,11 +34,15 @@ export class UsersService {
     if (checkEmail) {
       throw new BadRequestException(`Email: ${email} đã tồn tại trên hệ thống. Vui lòng sử dụng email khác.`)
     }
-
+    
     const handlePassword = this.getHashPassword(password);
 
     return await this.userModel.create({
-      name: name, email: email, password: handlePassword, age: age, gender: gender, avatar: avatar, role: role
+      name: name, email: email, password: handlePassword, age: age, gender: gender, avatar: avatar, role: role,
+      createdBy: {
+        _id: user._id,
+        email: user.email,
+      }
     });
   }
 
@@ -73,13 +77,13 @@ export class UsersService {
   }
 
   async findOneUserService(id: string) {
-      return await this.userModel.findById(id);
+      return await this.userModel.findById(id).populate({ path: "role", select: {name:1} });
   }
 
   findOneByUsername(email: string) {
     return this.userModel.findOne({
       email: email,
-    });
+    }).populate({ path: "role", select: { name: 1 } });
   }
 
   async updateUserService(id: string, updateUserDto: UpdateUserDto) {
@@ -119,11 +123,14 @@ export class UsersService {
   // update user with refresh_token when login 
 
   updateUserFunction = async (refreshToken: string, _id: string) => {
-    return await this.userModel.updateOne({ _id }, { refreshToken });
+    return await this.userModel.updateOne({ _id }, { refreshToken }).populate({
+      path: "role",
+      select: {name:1}
+    });
   }
 
   findUserByToken = async (refreshToken: string) => {
-    return await this.userModel.findOne({ refreshToken })
+    return await this.userModel.findOne({ refreshToken });
   }
 
   // Register

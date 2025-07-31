@@ -3,18 +3,17 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
-import { query } from 'express';
+
 import { IUser } from './users.interface';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Public()
   @ResponseMessage("Create user success")
   @Post()
-  createUserController(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.createNewService(createUserDto);
+  createUserController(@Body() createUserDto: CreateUserDto, @User() user: IUser) {
+    return this.usersService.createNewService(createUserDto,user);
   }
 
   @Public()
