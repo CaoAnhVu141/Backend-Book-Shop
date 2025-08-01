@@ -1,26 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User, Roles } from 'src/decorator/customize';
 
 import { IUser } from './users.interface';
+import { RolesGuard } from 'src/guard/roles.guard';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
+  @Roles("Admin")
   @ResponseMessage("Create user success")
   @Post()
   createUserController(@Body() createUserDto: CreateUserDto, @User() user: IUser) {
-    return this.usersService.createNewService(createUserDto,user);
+    return this.usersService.createNewService(createUserDto, user);
   }
 
   @Public()
   @Get()
   @ResponseMessage("Fetch list users success")
-  findAllUserController(@Query("current") currentPage: string,@Query("pageSize") limit: string, @Query() qs: string) {
-    return this.usersService.getAllUserService(+currentPage,+limit,qs);
+  findAllUserController(@Query("current") currentPage: string, @Query("pageSize") limit: string, @Query() qs: string) {
+    return this.usersService.getAllUserService(+currentPage, +limit, qs);
   }
 
   @Get(':id')

@@ -7,6 +7,7 @@ import { TransformInterceptor } from './auth/core/transform.interceptor';
 import cookieParser from 'cookie-parser';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { RolesGuard } from './guard/roles.guard';
 
 async function bootstrap() {
 
@@ -16,6 +17,7 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   app.useGlobalGuards(new JwtAuthGuard(reflector));
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
+  app.useGlobalGuards(new RolesGuard(reflector));
 
   app.useStaticAssets(join(__dirname, '..', 'public')); //js, css, images
   app.setBaseViewsDir(join(__dirname, '..', 'views')); //view 

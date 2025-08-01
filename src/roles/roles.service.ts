@@ -16,9 +16,6 @@ export class RolesService {
     ) { }
   async createRoleService(createRoleDto: CreateRoleDto, user: IUser) {
       const {name,description} = createRoleDto;
-      if(name){
-        throw new BadRequestException("Dữ liệu đã tồn tại trong hệ thống");
-      }
       let roles = await this.roleModel.create({
         name,description,
         createdBy: {
