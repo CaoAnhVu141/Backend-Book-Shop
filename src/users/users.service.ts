@@ -9,6 +9,7 @@ import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
 import { UsersModule } from './users.module';
 import aqp from 'api-query-params';
 import { IUser } from './users.interface';
+import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,8 @@ export class UsersService {
   constructor(
     @InjectModel(UserM.name)
     private userModel: SoftDeleteModel<UserDocument>,
-
+    @InjectModel(Role.name)
+    private roleModel: SoftDeleteModel<RoleDocument>,
   ) { }
 
   getHashPassword = (password: string) => {
@@ -121,7 +123,6 @@ export class UsersService {
   }
 
   // update user with refresh_token when login 
-
   updateUserFunction = async (refreshToken: string, _id: string) => {
     return await this.userModel.updateOne({ _id }, { refreshToken }).populate({
       path: "role",
@@ -135,16 +136,19 @@ export class UsersService {
 
   // Register
   async registerUserService(user: RegisterUserDto){
-      const {name,email,password} = user;
+      const {name,email,password, role} = user;
       const checkEmail = await this.userModel.findOne({email});
       if(checkEmail){
         throw new BadRequestException(`Email: ${email} đã tồn tại trên hệ thống. Vui lòng sử dụng email khác.`)
       }
+      const roleUser = (await this.roleModel.findOne({name: "USER"}));
+      console.log("role user: ", roleUser);
       const hashPassword = this.getHashPassword(password);
       let dataRegister = await this.userModel.create({
         name,
         email,
         password: hashPassword,
+        role: roleUser._id,
       });
       return dataRegister;
   }

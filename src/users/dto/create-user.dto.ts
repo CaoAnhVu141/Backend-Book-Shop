@@ -36,6 +36,11 @@ export class RegisterUserDto {
     @IsNotEmpty({message: "Password không được để trống"})
     password: string;
 
+    @IsMongoId({message: 'Phải có định dạng là MonggoId'})
+    role: mongoose.Schema.Types.ObjectId;
+
+
+
     
 
 }
