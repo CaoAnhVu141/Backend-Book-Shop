@@ -11,6 +11,8 @@ import aqp from 'api-query-params';
 import { IUser } from './users.interface';
 import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
 import { FilterUserDto } from './dto/filter-user.dto';
+import { filter } from 'rxjs';
+import { query } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -156,10 +158,16 @@ export class UsersService {
 
   // to do filter user
   async filterUserService(filteruserdto: FilterUserDto){
-    const {name} = filteruserdto;
-      const response = await this.userModel.find({
-        name: {$regex: name, $options: 'i'}
-      });
+    const {name, email} = filteruserdto;
+      const conditions: any = {};
+      if(name){
+        conditions.name = {$regex: name, $options: 'i'};
+      }
+      if(email){
+        conditions.email = {$regex: email, $options: 'i'}
+      }
+      const response = await this.userModel.find(conditions);
+      console.log("check response: ", response);
       return response;
   }
 }

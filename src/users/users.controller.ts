@@ -19,8 +19,6 @@ export class UsersController {
     return this.usersService.createNewService(createUserDto, user);
   }
 
-  
-
   @Public()
   @Get()
   @ResponseMessage("Fetch list users success")
