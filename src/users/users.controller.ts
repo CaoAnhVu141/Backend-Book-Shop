@@ -6,6 +6,7 @@ import { Public, ResponseMessage, User, Roles } from 'src/decorator/customize';
 
 import { IUser } from './users.interface';
 import { RolesGuard } from 'src/guard/roles.guard';
+import { FilterUserDto } from './dto/filter-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -18,11 +19,20 @@ export class UsersController {
     return this.usersService.createNewService(createUserDto, user);
   }
 
+  
+
   @Public()
   @Get()
   @ResponseMessage("Fetch list users success")
   findAllUserController(@Query("current") currentPage: string, @Query("pageSize") limit: string, @Query() qs: string) {
     return this.usersService.getAllUserService(+currentPage, +limit, qs);
+  }
+
+  @Get('search')
+  @ResponseMessage("Filter user success")
+  filterUserController(@Query() filteruserdto: FilterUserDto){
+    console.log("check name user filter: ",filteruserdto.name);
+    return this.usersService.filterUserService(filteruserdto);
   }
 
   @Get(':id')
@@ -44,4 +54,6 @@ export class UsersController {
   removeByIdController(@Param('id') id: string) {
     return this.usersService.removeByIdService(id);
   }
+
+  
 }

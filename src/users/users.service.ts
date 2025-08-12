@@ -10,6 +10,7 @@ import { UsersModule } from './users.module';
 import aqp from 'api-query-params';
 import { IUser } from './users.interface';
 import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
+import { FilterUserDto } from './dto/filter-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -151,5 +152,14 @@ export class UsersService {
         role: roleUser._id,
       });
       return dataRegister;
+  }
+
+  // to do filter user
+  async filterUserService(filteruserdto: FilterUserDto){
+    const {name} = filteruserdto;
+      const response = await this.userModel.find({
+        name: {$regex: name, $options: 'i'}
+      });
+      return response;
   }
 }
