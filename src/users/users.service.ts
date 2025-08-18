@@ -32,14 +32,14 @@ export class UsersService {
 
   async createNewService(createUserDto: CreateUserDto, user: IUser) {
     const {
-      name, email, password, age, gender,avatar, role
+      name, email, password, age, gender, avatar, role
     } = createUserDto;
 
-    const checkEmail = await this.userModel.findOne({email});
+    const checkEmail = await this.userModel.findOne({ email });
     if (checkEmail) {
       throw new BadRequestException(`Email: ${email} đã tồn tại trên hệ thống. Vui lòng sử dụng email khác.`)
     }
-    
+
     const handlePassword = this.getHashPassword(password);
 
     return await this.userModel.create({
@@ -55,6 +55,39 @@ export class UsersService {
     const { filter, sort, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
+
+    // update filter name, email, ..
+    if (filter?.name) {
+      filter.name = { $regex: filter.name, $options: 'i' };
+    }
+    if (filter?.email) {
+      filter.email = { $regex: filter.email, $options: 'i' };
+    }
+
+    // filter createAt to createAt
+    // if(filter.createAt){
+    //   if(filter.createAt.$gte){
+    //     filter.createdAt.$gte = new Date(filter.createdAt.$gte);
+    //   }
+    //   if(filter.createAt.$lte){
+    //     filter.createdAt.$gte = new Date(filter.createdAt.$lte);
+    //   }
+    // }
+
+    // Chuyển createdAt.$gte và $lte về dạng Date ////
+    if (filter.createdAt) {
+      if (typeof filter.createdAt === 'object') {
+        if (filter.createdAt.$gte) {
+          filter.createdAt.$gte = new Date(filter.createdAt.$gte);
+        }
+        if (filter.createdAt.$lte) {
+          filter.createdAt.$lte = new Date(filter.createdAt.$lte);
+        }
+      } else {
+        delete filter.createdAt;
+      }
+    }
+
 
     let offset = (+currentPage - 1) * (+limit);
     let defaultLimit = +limit ? +limit : 10;
@@ -72,17 +105,17 @@ export class UsersService {
       .exec();
     return {
       meta: {
-        current: currentPage, 
-        pageSize: limit, 
-        pages: totalPages,  
+        current: currentPage,
+        pageSize: limit,
+        pages: totalPages,
         total: totalItems
       },
-      result 
+      result
     }
   }
 
   async findOneUserService(id: string) {
-      return await this.userModel.findById(id).populate({ path: "role", select: {name:1} });
+    return await this.userModel.findById(id).populate({ path: "role", select: { name: 1 } });
   }
 
   findOneByUsername(email: string) {
@@ -92,7 +125,7 @@ export class UsersService {
   }
 
   async updateUserService(id: string, updateUserDto: UpdateUserDto) {
-    const {name,email,age,gender} = updateUserDto;
+    const { name, email, age, gender } = updateUserDto;
     const userData = await this.userModel.findById(id);
     if (!userData || userData.isDeleted) {
       throw new NotFoundException("Tài khoản không tồn tại");
@@ -101,10 +134,10 @@ export class UsersService {
     // if(userEmail){
     //     throw new ConflictException("Email đã tồn tại trong hệ thống");
     // }
-   return await this.userModel.updateOne({
+    return await this.userModel.updateOne({
       _id: id
     }, {
-        ...updateUserDto
+      ...updateUserDto
     });
   }
 
@@ -115,7 +148,7 @@ export class UsersService {
     }
     await this.userModel.updateOne({
       _id: id,
-    },{
+    }, {
       isDeleted: true
     })
     return this.userModel.softDelete({ _id: id });
@@ -129,7 +162,7 @@ export class UsersService {
   updateUserFunction = async (refreshToken: string, _id: string) => {
     return await this.userModel.updateOne({ _id }, { refreshToken }).populate({
       path: "role",
-      select: {name:1}
+      select: { name: 1 }
     });
   }
 
@@ -138,36 +171,36 @@ export class UsersService {
   }
 
   // Register
-  async registerUserService(user: RegisterUserDto){
-      const {name,email,password, role} = user;
-      const checkEmail = await this.userModel.findOne({email});
-      if(checkEmail){
-        throw new BadRequestException(`Email: ${email} đã tồn tại trên hệ thống. Vui lòng sử dụng email khác.`)
-      }
-      const roleUser = (await this.roleModel.findOne({name: "USER"}));
-      console.log("role user: ", roleUser);
-      const hashPassword = this.getHashPassword(password);
-      let dataRegister = await this.userModel.create({
-        name,
-        email,
-        password: hashPassword,
-        role: roleUser._id,
-      });
-      return dataRegister;
+  async registerUserService(user: RegisterUserDto) {
+    const { name, email, password, role } = user;
+    const checkEmail = await this.userModel.findOne({ email });
+    if (checkEmail) {
+      throw new BadRequestException(`Email: ${email} đã tồn tại trên hệ thống. Vui lòng sử dụng email khác.`)
+    }
+    const roleUser = (await this.roleModel.findOne({ name: "USER" }));
+    console.log("role user: ", roleUser);
+    const hashPassword = this.getHashPassword(password);
+    let dataRegister = await this.userModel.create({
+      name,
+      email,
+      password: hashPassword,
+      role: roleUser._id,
+    });
+    return dataRegister;
   }
 
   // to do filter user
-  async filterUserService(filteruserdto: FilterUserDto){
-    const {name, email} = filteruserdto;
-      const conditions: any = {};
-      if(name){
-        conditions.name = {$regex: name, $options: 'i'};
-      }
-      if(email){
-        conditions.email = {$regex: email, $options: 'i'}
-      }
-      const response = await this.userModel.find(conditions);
-      console.log("check response: ", response);
-      return response;
+  async filterUserService(filteruserdto: FilterUserDto) {
+    const { name, email } = filteruserdto;
+    const conditions: any = {};
+    if (name) {
+      conditions.name = { $regex: name, $options: 'i' };
+    }
+    if (email) {
+      conditions.email = { $regex: email, $options: 'i' }
+    }
+    const response = await this.userModel.find(conditions);
+    console.log("check response: ", response);
+    return response;
   }
 }

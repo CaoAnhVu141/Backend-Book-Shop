@@ -29,7 +29,6 @@ export class UsersController {
   @Get('search')
   @ResponseMessage("Filter user success")
   filterUserController(@Query() filteruserdto: FilterUserDto){
-    console.log("check name user filter: ",filteruserdto.name);
     return this.usersService.filterUserService(filteruserdto);
   }
 
