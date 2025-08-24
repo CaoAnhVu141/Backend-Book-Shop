@@ -64,30 +64,24 @@ export class UsersService {
       filter.email = { $regex: filter.email, $options: 'i' };
     }
 
-    // filter createAt to createAt
-    // if(filter.createAt){
-    //   if(filter.createAt.$gte){
-    //     filter.createdAt.$gte = new Date(filter.createdAt.$gte);
-    //   }
-    //   if(filter.createAt.$lte){
-    //     filter.createdAt.$gte = new Date(filter.createdAt.$lte);
-    //   }
-    // }
+    //thực hiện fillter startDate và endDate
+    if(filter?.startDate || filter?.endDate){
+      const createdAt: any = {};
 
-    // Chuyển createdAt.$gte và $lte về dạng Date ////
-    if (filter.createdAt) {
-      if (typeof filter.createdAt === 'object') {
-        if (filter.createdAt.$gte) {
-          filter.createdAt.$gte = new Date(filter.createdAt.$gte);
-        }
-        if (filter.createdAt.$lte) {
-          filter.createdAt.$lte = new Date(filter.createdAt.$lte);
-        }
-      } else {
-        delete filter.createdAt;
+      if(filter.startDate){
+        createdAt.$gte = new Date(filter.startDate);
       }
-    }
+      if(filter.endDate){
+        const dataEndDate = new Date(filter.endDate);
+        dataEndDate.setHours(23,59,59,999);
+        createdAt.$lte = dataEndDate;
+      }
+      filter.createdAt = createdAt;
+      delete filter.startDate;
+      delete filter.endDate;
+      console.log(filter);
 
+    }
 
     let offset = (+currentPage - 1) * (+limit);
     let defaultLimit = +limit ? +limit : 10;
