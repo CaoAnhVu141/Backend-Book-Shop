@@ -21,7 +21,6 @@ export class FilesController {
   //   }
   // }
 
-  @Public()
   @Post('upload')
   @UseFilters(new HttpExceptionFilter())
   @ResponseMessage("Upload Single File")

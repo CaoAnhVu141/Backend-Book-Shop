@@ -79,8 +79,6 @@ export class UsersService {
       filter.createdAt = createdAt;
       delete filter.startDate;
       delete filter.endDate;
-      console.log(filter);
-
     }
 
     let offset = (+currentPage - 1) * (+limit);
