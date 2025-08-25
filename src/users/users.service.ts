@@ -42,7 +42,6 @@ export class UsersService {
     }
 
     const role = await this.roleModel.findOne({name: roleName});
-    console.log("check role: ", role);
 
     if(!role || role.isDeleted){
       throw new NotFoundException("Role không tồn tại trong hệ thống");
