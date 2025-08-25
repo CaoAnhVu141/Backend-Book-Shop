@@ -21,10 +21,11 @@ export class CreateUserDto {
 
     avatar: string;
 
-    @IsMongoId({message: 'Phải có định dạng là MonggoId'})
-    role: mongoose.Schema.Types.ObjectId;
+    // @IsMongoId({message: 'Phải có định dạng là MonggoId'})
+    // role: mongoose.Schema.Types.ObjectId;
 
-
+    @IsNotEmpty({message: "Role không được để trống"})
+    role: string;
 }
 
 export class RegisterUserDto {

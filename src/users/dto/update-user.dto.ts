@@ -15,4 +15,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
     @IsNotEmpty({ message: "Gender không được để trống" })
     gender: string;
+
+    @IsNotEmpty({message: "Role không được để trống"})
+    role: string;
 }

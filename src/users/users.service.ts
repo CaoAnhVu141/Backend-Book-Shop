@@ -32,18 +32,26 @@ export class UsersService {
 
   async createNewService(createUserDto: CreateUserDto, user: IUser) {
     const {
-      name, email, password, age, gender, avatar, role
+      name, email, password, age, gender, avatar, role: roleName
     } = createUserDto;
+
 
     const checkEmail = await this.userModel.findOne({ email });
     if (checkEmail) {
       throw new BadRequestException(`Email: ${email} đã tồn tại trên hệ thống. Vui lòng sử dụng email khác.`)
     }
 
+    const role = await this.roleModel.findOne({name: roleName});
+    console.log("check role: ", role);
+
+    if(!role || role.isDeleted){
+      throw new NotFoundException("Role không tồn tại trong hệ thống");
+    }
+
     const handlePassword = this.getHashPassword(password);
 
     return await this.userModel.create({
-      name: name, email: email, password: handlePassword, age: age, gender: gender, avatar: avatar, role: role,
+      name: name, email: email, password: handlePassword, age: age, gender: gender, avatar: avatar, role: role._id,
       createdBy: {
         _id: user._id,
         email: user.email,
@@ -65,15 +73,15 @@ export class UsersService {
     }
 
     //thực hiện fillter startDate và endDate
-    if(filter?.startDate || filter?.endDate){
+    if (filter?.startDate || filter?.endDate) {
       const createdAt: any = {};
 
-      if(filter.startDate){
+      if (filter.startDate) {
         createdAt.$gte = new Date(filter.startDate);
       }
-      if(filter.endDate){
+      if (filter.endDate) {
         const dataEndDate = new Date(filter.endDate);
-        dataEndDate.setHours(23,59,59,999);
+        dataEndDate.setHours(23, 59, 59, 999);
         createdAt.$lte = dataEndDate;
       }
       filter.createdAt = createdAt;
@@ -117,19 +125,22 @@ export class UsersService {
   }
 
   async updateUserService(id: string, updateUserDto: UpdateUserDto) {
-    const { name, email, age, gender } = updateUserDto;
+    const { name, email, age, gender, role: roleName } = updateUserDto;
     const userData = await this.userModel.findById(id);
     if (!userData || userData.isDeleted) {
       throw new NotFoundException("Tài khoản không tồn tại");
     }
-    // const userEmail = await this.userModel.findOne({email});
-    // if(userEmail){
-    //     throw new ConflictException("Email đã tồn tại trong hệ thống");
-    // }
+
+    const role = await this.roleModel.findOne({ name: roleName});
+
+    if(!role || role.isDeleted){
+      throw new NotFoundException("Dữ liệu không tồn tại");
+    }
+
     return await this.userModel.updateOne({
       _id: id
     }, {
-      ...updateUserDto
+      name: name, email: email, age: age, gender: gender, role: role._id
     });
   }
 
