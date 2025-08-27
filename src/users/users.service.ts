@@ -4,7 +4,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { User as UserM, UserDocument } from './schemas/user.schema';
-
 import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
 import { UsersModule } from './users.module';
 import aqp from 'api-query-params';

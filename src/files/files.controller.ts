@@ -11,16 +11,6 @@ import { HttpExceptionFilter } from 'src/auth/core/http-exception.filter';
 export class FilesController {
   constructor(private readonly filesService: FilesService) { }
 
-  // @Public()
-  // @Post('upload')
-  // @ResponseMessage("Upload Single File")
-  // @UseInterceptors(FileInterceptor('fileUpload'))
-  // uploadFile(@UploadedFile() file: Express.Multer.File) {
-  //   return {
-  //     fileName: file.filename
-  //   }
-  // }
-
   @Post('upload')
   @UseFilters(new HttpExceptionFilter())
   @ResponseMessage("Upload Single File")
