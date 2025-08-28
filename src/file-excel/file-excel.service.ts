@@ -27,7 +27,7 @@ export class FileExcelService {
       const data = fileExcelDto.data;
       const responseData = [];
       // thực hiện lấy danh sách theo data
-      const dataEmail = data.map(user => user.email);
+      const dataEmail = data.map(user => user.email); //lấy toàn bộ email trong danh sách import
       for (let item of data) {
         const role = await this.roleModel.findOne({ name: item.role });
         if (!role || role.isDeleted) {
@@ -52,7 +52,7 @@ export class FileExcelService {
       }
       return await this.userModel.insertMany(responseData);
     } catch (error) {
-      throw new InternalServerErrorException('Đã có lỗi khi import dữ liệu: ' + error.message);
+      throw new InternalServerErrorException(' ' + error.message);
     }
   }
 }
