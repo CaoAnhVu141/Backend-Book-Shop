@@ -5,6 +5,8 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
 import { genSaltSync, hashSync } from 'bcryptjs';
+import XLSX from 'xlsx';
+
 
 @Injectable()
 export class FileExcelService {
@@ -51,6 +53,31 @@ export class FileExcelService {
         });
       }
       return await this.userModel.insertMany(responseData);
+    } catch (error) {
+      throw new InternalServerErrorException(' ' + error.message);
+    }
+  }
+
+  // function export file excel
+  handleExportExcel = async () => {
+    try {
+      const users = await this.userModel.find();
+      if(!users){
+        throw new NotFoundException(`Xin lỗi dữ liệu không tồn tại`);
+      }
+      // handle convert data list to array
+      const array = users.map(item => ({
+        name: item.name,
+        email: item.email,
+        age: item?.age,
+        gender: item?.gender,
+        role: item?.role,
+        createdAt: item.createdAt,
+      }));
+      // convert to csv
+      const worksheet = XLSX.utils.json_to_sheet(array);
+      const fileCsv = XLSX.utils.sheet_to_csv(worksheet);
+      return fileCsv;
     } catch (error) {
       throw new InternalServerErrorException(' ' + error.message);
     }
