@@ -59,14 +59,16 @@ export class FileExcelService {
   }
 
   // function export file excel
-  handleExportExcel = async () => {
+  handleExportExcel = async (array: any[]) => {
     try {
-      const users = await this.userModel.find();
+      const users = await this.userModel.find().lean();
       if(!users){
         throw new NotFoundException(`Xin lỗi dữ liệu không tồn tại`);
       }
+      
       // handle convert data list to array
-      const array = users.map(item => ({
+       array = users.map(item => ({
+
         name: item.name,
         email: item.email,
         age: item?.age,

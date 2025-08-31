@@ -8,7 +8,7 @@ import { ResponseMessage } from 'src/decorator/customize';
 export class FileExcelController {
   constructor(private readonly fileExcelService: FileExcelService) { }
 
-  @Post()
+  @Post('import')
   @ResponseMessage("Upload file excel success")
   handUploadExcelController(@Body() fileExcelDto: CreateFileExcelDto) {
     return this.fileExcelService.handleUploadExcel(fileExcelDto);
@@ -16,8 +16,9 @@ export class FileExcelController {
 
   @Post('export')
   @ResponseMessage("Export file excel success")
-  async handleExportExcelController(@Res() res: Response) {
-    const dataExport = await this.fileExcelService.handleExportExcel();
+  async handleExportExcelController(@Res() res: Response,array: any[]) {
+    const dataExport = await this.fileExcelService.handleExportExcel(array);
+    console.log("data Export: ", dataExport);
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', 'attachment; filename=users.csv');
     res.send('\uFEFF' + dataExport);
