@@ -6,6 +6,7 @@ import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
 import { genSaltSync, hashSync } from 'bcryptjs';
 import XLSX from 'xlsx';
+import dayjs from 'dayjs';
 
 
 @Injectable()
@@ -61,21 +62,21 @@ export class FileExcelService {
   // function export file excel
   handleExportExcel = async (array: any[]) => {
     try {
-      const users = await this.userModel.find().lean();
-      if(!users){
+      const users = await this.userModel.find().populate({ path: "role", select: { name: 1 } });
+      if (!users) {
         throw new NotFoundException(`Xin lỗi dữ liệu không tồn tại`);
       }
-      
-      // handle convert data list to array
-       array = users.map(item => ({
 
+      // handle convert data list to array
+      array = users.map(item => ({
         name: item.name,
         email: item.email,
         age: item?.age,
         gender: item?.gender,
-        role: item?.role,
-        createdAt: item.createdAt,
+        role: (item?.role as any)?.name || "Không có role",
+        createdAt: dayjs(item?.createdAt).format('DD/MM/YYYY'),
       }));
+      console.log("check array: ", array);
       // convert to csv
       const worksheet = XLSX.utils.json_to_sheet(array);
       const fileCsv = XLSX.utils.sheet_to_csv(worksheet);

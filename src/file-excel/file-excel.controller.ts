@@ -18,7 +18,6 @@ export class FileExcelController {
   @ResponseMessage("Export file excel success")
   async handleExportExcelController(@Res() res: Response,array: any[]) {
     const dataExport = await this.fileExcelService.handleExportExcel(array);
-    console.log("data Export: ", dataExport);
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', 'attachment; filename=users.csv');
     res.send('\uFEFF' + dataExport);
