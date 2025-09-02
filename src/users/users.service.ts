@@ -128,13 +128,12 @@ export class UsersService {
     if (!userData || userData.isDeleted) {
       throw new NotFoundException("Tài khoản không tồn tại");
     }
-
+    
     const role = await this.roleModel.findOne({ name: roleName});
-
+    console.log("check role: ", role.name);
     if(!role || role.isDeleted){
       throw new NotFoundException("Dữ liệu không tồn tại");
     }
-
     return await this.userModel.updateOne({
       _id: id
     }, {

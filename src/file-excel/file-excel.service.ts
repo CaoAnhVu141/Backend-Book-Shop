@@ -76,7 +76,6 @@ export class FileExcelService {
         role: (item?.role as any)?.name || "Không có role",
         createdAt: dayjs(item?.createdAt).format('DD/MM/YYYY'),
       }));
-      console.log("check array: ", array);
       // convert to csv
       const worksheet = XLSX.utils.json_to_sheet(array);
       const fileCsv = XLSX.utils.sheet_to_csv(worksheet);
