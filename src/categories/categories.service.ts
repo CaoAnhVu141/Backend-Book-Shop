@@ -45,6 +45,22 @@ export class CategoriesService {
       filter.description = {$regex: filter.description, $options: 'i'};
     }
 
+    //thực hiện fillter startDate và endDate
+    if(filter?.startDate || filter?.endDate){
+      const createdAt: any{};
+      if(filter.startDate){
+        createdAt.$gte = new Date(filter.startDate);
+      }
+      if(filter.endDate){
+        const dataEndDate = new Date(filter.endDate);
+        dataEndDate.setHours(23,59,59,999);
+        filter.$lte = dataEndDate;
+      }
+      filter.createdAt = createdAt;
+      delete filter.startDate;
+      delete filter.endDate;
+    }
+
     let offset = (+currentPage - 1) * (+limit);
     let defaultLimit = +limit ? +limit : 10;
 
