@@ -47,14 +47,14 @@ export class CategoriesService {
 
     //thực hiện fillter startDate và endDate
     if(filter?.startDate || filter?.endDate){
-      const createdAt: any{};
+      const createdAt: any = {};
       if(filter.startDate){
         createdAt.$gte = new Date(filter.startDate);
       }
       if(filter.endDate){
         const dataEndDate = new Date(filter.endDate);
         dataEndDate.setHours(23,59,59,999);
-        filter.$lte = dataEndDate;
+        createdAt.$lte = dataEndDate;
       }
       filter.createdAt = createdAt;
       delete filter.startDate;
