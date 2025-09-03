@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,6 +18,11 @@ export class CategoriesService {
   async createCategoryService(createCategoryDto: CreateCategoryDto, user: IUser) {
     const { name, description } = createCategoryDto;
 
+    const checkName = await this.categoryModel.findOne({name});
+    if(checkName){
+      throw new BadRequestException(`${checkName.name} đã tồn tại trong hệ thống`);
+    }
+
     let category = await this.categoryModel.create({
       name, description,
       createdBy: {
@@ -32,6 +37,13 @@ export class CategoriesService {
     const { filter, sort, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
+
+    if(filter?.name){
+      filter.name = { $regex: filter.name, $options: 'i' };
+    }
+    if(filter?.description){
+      filter.description = {$regex: filter.description, $options: 'i'};
+    }
 
     let offset = (+currentPage - 1) * (+limit);
     let defaultLimit = +limit ? +limit : 10;
