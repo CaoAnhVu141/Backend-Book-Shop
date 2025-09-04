@@ -56,7 +56,7 @@ export class AuthorsService {
       if(filter.endDate){
         const dataEndDate = new Date(filter.endDate);
         dataEndDate.setHours(23,59,59,999);
-        createdAt.$gte = dataEndDate;
+        createdAt.$lte = dataEndDate;
       }
       filter.createdAt = createdAt;
       delete filter.startDate;
