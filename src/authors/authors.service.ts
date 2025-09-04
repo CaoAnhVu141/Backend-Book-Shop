@@ -32,6 +32,14 @@ export class AuthorsService {
     delete filter.current;
     delete filter.pageSize;
 
+
+    if(filter?.name){
+      filter.name = { $regex: filter.name, $options: 'i' };
+    }
+    if(filter?.bio){
+      filter.bio = { $regex: filter.bio, $options: 'i' };
+    }
+
     let offset = (+currentPage - 1) * (+limit);
     let defaultLimit = +limit ? +limit : 10;
 
