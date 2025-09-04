@@ -6,6 +6,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { Author, AuthorDocument } from './schemas/author.schema';
 import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
+import { filter } from 'rxjs';
 
 @Injectable()
 export class AuthorsService {
@@ -43,6 +44,23 @@ export class AuthorsService {
     }
     if(filter?.bio){
       filter.bio = { $regex: filter.bio, $options: 'i' };
+    }
+
+    //thực hiện fillter startDate và endDate
+    if(filter?.startDate || filter?.endDate){
+      const createdAt: any = {};
+
+      if(filter.startDate){
+        createdAt.$gte = new Date(filter.startDate);
+      }
+      if(filter.endDate){
+        const dataEndDate = new Date(filter.endDate);
+        dataEndDate.setHours(23,59,59,999);
+        createdAt.$gte = dataEndDate;
+      }
+      filter.createdAt = createdAt;
+      delete filter.startDate;
+      delete filter.endDate;
     }
 
     let offset = (+currentPage - 1) * (+limit);
