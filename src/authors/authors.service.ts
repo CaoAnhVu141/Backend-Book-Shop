@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,6 +18,11 @@ export class AuthorsService {
   async createAuthorService(createAuthorDto: CreateAuthorDto, user: IUser) {
     const { name, bio, avatar, is_popular } = createAuthorDto;
 
+    const dataName = await this.authorModel.findOne({name});
+    if(dataName.name){
+      throw new BadRequestException(`${dataName.name} đã tồn tại trong hệ thống`);
+    }
+
     let author = await this.authorModel.create({
       name, bio, avatar, is_popular: true, createdBy: {
         _id: user._id,
@@ -31,7 +36,6 @@ export class AuthorsService {
     const { filter, sort, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-
 
     if(filter?.name){
       filter.name = { $regex: filter.name, $options: 'i' };
