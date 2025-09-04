@@ -18,9 +18,10 @@ export class AuthorsService {
   async createAuthorService(createAuthorDto: CreateAuthorDto, user: IUser) {
     const { name, bio, avatar, is_popular } = createAuthorDto;
 
-    const dataName = await this.authorModel.findOne({name});
-    if(dataName.name){
-      throw new BadRequestException(`${dataName.name} đã tồn tại trong hệ thống`);
+    const checkName = await this.authorModel.findOne({name});
+
+    if(checkName){
+      throw new BadRequestException(`${checkName.name} đã tồn tại trong hệ thống`);
     }
 
     let author = await this.authorModel.create({
