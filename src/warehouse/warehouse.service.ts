@@ -16,10 +16,10 @@ export class WarehouseService {
   ) { }
 
   async createWareHouseService(createWarehouseDto: CreateWarehouseDto, user: IUser) {
-    const {name, description, location, status} = createWarehouseDto;
+    const { name, description, location, status } = createWarehouseDto;
 
-    const checkName = await this.wareHouseModel.findOne({name});
-    if(checkName){
+    const checkName = await this.wareHouseModel.findOne({ name });
+    if (checkName) {
       throw new BadRequestException(`${checkName.name} đã tồn tại trong hệ trống`);
     }
 
@@ -62,31 +62,42 @@ export class WarehouseService {
   }
 
   async findOneWareHouseService(_id: string) {
-    const wareHouse =  await this.wareHouseModel.findById({_id});
-    if(!wareHouse || wareHouse.isDeleted){
+    const wareHouse = await this.wareHouseModel.findById({ _id });
+    if (!wareHouse || wareHouse.isDeleted) {
       throw new NotFoundException("Dữ liệu không tồn tại");
     }
     return wareHouse;
   }
 
-  update(id: number, updateWarehouseDto: UpdateWarehouseDto) {
-    return `This action updates a #${id} warehouse`;
-  }
-
-  async removeWareHouseService(_id: string, user: IUser) {
-    const wareHouse = await this.wareHouseModel.findById({_id});
-    if(!wareHouse || wareHouse.isDeleted){
+  async updateWareHouseSerice(id: string, updateWarehouseDto: UpdateWarehouseDto, user: IUser) {
+    const wareHouse = await this.wareHouseModel.findById(id);
+    if (!wareHouse || wareHouse.isDeleted) {
       throw new NotFoundException("Dữ liệu không tồn tại");
     }
-    await this.wareHouseModel.updateOne({
-      _id: _id
-    },
-    {
-      deletedBy: {
+    return await this.wareHouseModel.updateOne(
+      { _id: id },
+      { ...updateWarehouseDto,
+      updatedBy: {
         _id: user._id,
         email: user.email
       }
     });
-    return await this.wareHouseModel.softDelete({_id: _id});
+  }
+
+  async removeWareHouseService(id: string, user: IUser) {
+    const wareHouse = await this.wareHouseModel.findById({ id });
+    if (!wareHouse || wareHouse.isDeleted) {
+      throw new NotFoundException("Dữ liệu không tồn tại");
+    }
+    await this.wareHouseModel.updateOne({
+      _id: id
+    },
+      {
+        deletedBy: {
+          _id: user._id,
+          email: user.email
+        }
+      });
+    return await this.wareHouseModel.softDelete({ _id: id });
   }
 }
