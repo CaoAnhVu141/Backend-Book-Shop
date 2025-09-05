@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
@@ -11,13 +11,16 @@ export class WarehouseController {
 
   @Post()
   @ResponseMessage("Create warehouse success")
-  create(@Body() createWarehouseDto: CreateWarehouseDto, @User() user: IUser) {
+  createWareHouseController(@Body() createWarehouseDto: CreateWarehouseDto, @User() user: IUser) {
     return this.warehouseService.createWareHouseService(createWarehouseDto, user);
   }
 
   @Get()
-  findAll() {
-    return this.warehouseService.findAll();
+  @ResponseMessage("Fetch all warehouse success")
+  getAllWareHouseController(@Query("current") currentPage: string,
+      @Query("pageSize") limit: string,
+      @Query() qs: string) {
+    return this.warehouseService.getAllWareHouseService(+currentPage, +limit, qs);
   }
 
   @Get(':id')
