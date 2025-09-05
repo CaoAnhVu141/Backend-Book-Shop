@@ -24,8 +24,9 @@ export class WarehouseController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.warehouseService.findOne(+id);
+  @ResponseMessage("Find one warehouse success")
+  findOne(@Param('id') _id: string) {
+    return this.warehouseService.findOneWareHouseService(_id);
   }
 
   @Patch(':id')
@@ -34,7 +35,8 @@ export class WarehouseController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.warehouseService.remove(+id);
+  @ResponseMessage("Delete warehouse success")
+  remove(@Param('id') id: string, @User() user: IUser) {
+    return this.warehouseService.removeWareHouseService(id, user);
   }
 }

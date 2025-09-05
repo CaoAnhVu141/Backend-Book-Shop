@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -61,15 +61,32 @@ export class WarehouseService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} warehouse`;
+  async findOneWareHouseService(_id: string) {
+    const wareHouse =  await this.wareHouseModel.findById({_id});
+    if(!wareHouse || wareHouse.isDeleted){
+      throw new NotFoundException("Dữ liệu không tồn tại");
+    }
+    return wareHouse;
   }
 
   update(id: number, updateWarehouseDto: UpdateWarehouseDto) {
     return `This action updates a #${id} warehouse`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} warehouse`;
+  async removeWareHouseService(_id: string, user: IUser) {
+    const wareHouse = await this.wareHouseModel.findById({_id});
+    if(!wareHouse || wareHouse.isDeleted){
+      throw new NotFoundException("Dữ liệu không tồn tại");
+    }
+    await this.wareHouseModel.updateOne({
+      _id: _id
+    },
+    {
+      deletedBy: {
+        _id: user._id,
+        email: user.email
+      }
+    });
+    return await this.wareHouseModel.softDelete({_id: _id});
   }
 }
