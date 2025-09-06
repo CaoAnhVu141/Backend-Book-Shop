@@ -13,6 +13,9 @@ export class Review {
     book: mongoose.Schema.Types.ObjectId;
 
     @Prop()
+    rating: number;
+
+    @Prop()
     comment: string;
 
     images: [{ type: string }];
