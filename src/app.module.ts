@@ -18,6 +18,7 @@ import { FavoriteModule } from './favorite/favorite.module';
 import { RolesModule } from './roles/roles.module';
 import { FileExcelModule } from './file-excel/file-excel.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
+import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { WarehouseModule } from './warehouse/warehouse.module';
       isGlobal: true
     }),
 
-    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule, RolesModule, FileExcelModule, WarehouseModule],
+    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule, RolesModule, FileExcelModule, WarehouseModule, InventoryModule],
   controllers: [AppController],
   providers: [AppService,
   //   {
