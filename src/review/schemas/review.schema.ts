@@ -12,13 +12,14 @@ export class Review {
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Book' })
     book: mongoose.Schema.Types.ObjectId;
 
-    @Prop()
+    @Prop({required: true})
     rating: number;
 
-    @Prop()
+    @Prop({required: true})
     comment: string;
 
-    images: [{ type: string }];
+    @Prop()
+    images: string[];
 
     @Prop({ type: Object })
     createdBy: {

@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 
 export class CreateReviewDto {
 
@@ -14,6 +14,7 @@ export class CreateReviewDto {
     @IsNotEmpty({message: "Rating không được để trống"})
     rating: number;
 
-    images: [{type: string}];
+    @IsOptional()
+    images?: string[];
 
 }
