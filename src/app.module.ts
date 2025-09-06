@@ -19,6 +19,7 @@ import { RolesModule } from './roles/roles.module';
 import { FileExcelModule } from './file-excel/file-excel.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -38,7 +39,7 @@ import { InventoryModule } from './inventory/inventory.module';
       isGlobal: true
     }),
 
-    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule, RolesModule, FileExcelModule, WarehouseModule, InventoryModule],
+    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule, RolesModule, FileExcelModule, WarehouseModule, InventoryModule, ReviewModule],
   controllers: [AppController],
   providers: [AppService,
   //   {
