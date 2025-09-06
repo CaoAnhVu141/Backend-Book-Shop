@@ -43,7 +43,6 @@ export class WarehouseService {
     const totalItems = (await this.wareHouseModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
-
     const result = await this.wareHouseModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)

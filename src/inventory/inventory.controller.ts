@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
@@ -7,17 +7,21 @@ import { ResponseMessage, User } from 'src/decorator/customize';
 
 @Controller('inventory')
 export class InventoryController {
-  constructor(private readonly inventoryService: InventoryService) {}
+  constructor(private readonly inventoryService: InventoryService) { }
 
   @Post()
   @ResponseMessage("Create inventory success")
   createInventoryController(@Body() createInventoryDto: CreateInventoryDto, @User() user: IUser) {
-    return this.inventoryService.createInventoryService(createInventoryDto,user);
+    return this.inventoryService.createInventoryService(createInventoryDto, user);
   }
 
   @Get()
-  findAll() {
-    return this.inventoryService.findAll();
+  @ResponseMessage("Fetch list inventory success")
+  getAllInventoryController(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string) {
+    return this.inventoryService.getAllInventoryService(+currentPage, +limit, qs);
   }
 
   @Get(':id')
