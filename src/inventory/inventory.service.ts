@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -11,25 +11,25 @@ import aqp from 'api-query-params';
 export class InventoryService {
 
   constructor(
-      @InjectModel(Inventory.name)
-      private inventoryModel: SoftDeleteModel<InventoryDocument>
-    ) { }
+    @InjectModel(Inventory.name)
+    private inventoryModel: SoftDeleteModel<InventoryDocument>
+  ) { }
 
   async createInventoryService(createInventoryDto: CreateInventoryDto, user: IUser) {
     const {
       book, warehouse, quantity } = createInventoryDto;
 
-      const inventory = await this.inventoryModel.create({
-        book,  warehouse, quantity,
-        createdBy: {
-          _id: user._id,
-          email: user.email,
-        }
-      });
-      return inventory
+    const inventory = await this.inventoryModel.create({
+      book, warehouse, quantity,
+      createdBy: {
+        _id: user._id,
+        email: user.email,
+      }
+    });
+    return inventory
   }
 
- async getAllInventoryService(currentPage: number, limit: number, qs: string) {
+  async getAllInventoryService(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize
@@ -55,15 +55,44 @@ export class InventoryService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} inventory`;
+  async findOneInventoryService(id: string) {
+    const inventory = await this.inventoryModel.findOne({ _id: id });
+    if (!inventory || inventory.isDeleted) {
+      throw new NotFoundException("Dữ liệu không tồn tại");
+    }
+    return inventory;
   }
 
-  update(id: number, updateInventoryDto: UpdateInventoryDto) {
-    return `This action updates a #${id} inventory`;
+  async updateInventoryService(id: string, updateInventoryDto: UpdateInventoryDto, user: IUser) {
+    const inventory = await this.inventoryModel.findById({_id: id});
+    if(!inventory || inventory.isDeleted){
+      throw new NotFoundException("Dữ liệu không tồn tại");
+    }
+    return await this.inventoryModel.updateOne(
+      {_id: id},
+      {
+        updateInventoryDto,
+        updatedBy: {
+          _id: user._id,
+          email: user.email
+        }
+      });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} inventory`;
+  async removeInventoryService(id: string, user: IUser) {
+    const inventory = await this.inventoryModel.findById({ _id: id });
+    if (!inventory || inventory.isDeleted) {
+      throw new NotFoundException("Dữ liệu không tồn tại");
+    }
+    await this.inventoryModel.updateOne({
+      _id: id,
+    },
+      {
+        deletedBy: {
+          _id: user._id,
+          email: user.email
+        }
+      });
+    return await this.inventoryModel.softDelete({_id: id});
   }
 }

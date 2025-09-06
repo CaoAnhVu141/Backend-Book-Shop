@@ -25,17 +25,19 @@ export class InventoryController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.inventoryService.findOne(+id);
+  findOneInventoryController(@Param('id') id: string) {
+    return this.inventoryService.findOneInventoryService(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInventoryDto: UpdateInventoryDto) {
-    return this.inventoryService.update(+id, updateInventoryDto);
+  @ResponseMessage("Update inventory success")
+  updateInventoryController(@Param('id') id: string, @Body() updateInventoryDto: UpdateInventoryDto, @User() user: IUser) {
+    return this.inventoryService.updateInventoryService(id, updateInventoryDto, user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.inventoryService.remove(+id);
+  @ResponseMessage("Delete inventory success")
+  removeInventoryController(@Param('id') id: string, @User() user: IUser) {
+    return this.inventoryService.removeInventoryService(id,user);
   }
 }
