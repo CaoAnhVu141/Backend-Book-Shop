@@ -20,6 +20,7 @@ import { FileExcelModule } from './file-excel/file-excel.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { ReviewModule } from './review/review.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { ReviewModule } from './review/review.module';
       isGlobal: true
     }),
 
-    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule, RolesModule, FileExcelModule, WarehouseModule, InventoryModule, ReviewModule],
+    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule, RolesModule, FileExcelModule, WarehouseModule, InventoryModule, ReviewModule, PaymentModule],
   controllers: [AppController],
   providers: [AppService,
   //   {
