@@ -5,7 +5,7 @@ export class CreateReviewDto {
     @IsNotEmpty({message: "User không được để trống"})
     user: string;
 
-    @IsNotEmpty({message: "User không được để trống"})
+    @IsNotEmpty({message: "Book không được để trống"})
     book: string;
 
     @IsNotEmpty({message: "Comment không được để trống"})

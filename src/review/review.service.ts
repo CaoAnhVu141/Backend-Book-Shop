@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { Review, ReviewDocument } from './schemas/review.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { IUser } from 'src/users/users.interface';
 
 @Injectable()
 export class ReviewService {
@@ -13,16 +14,29 @@ export class ReviewService {
     private reviewModel: SoftDeleteModel<ReviewDocument>
   ){}
 
-  create(createReviewDto: CreateReviewDto) {
-    return 'This action adds a new review';
+  async createReviewService(createReviewDto: CreateReviewDto, users: IUser) {
+    const {user, book, comment,rating, images} = createReviewDto;
+
+    const review = await this.reviewModel.create({
+      user, book, rating, comment,
+      createdBy: {
+        _id: users._id,
+        email: users.email,
+      }
+    });
+    return review;
   }
 
-  findAll() {
+  getAllReviewService() {
     return `This action returns all review`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
+  async findOneReviewService(id: string) {
+    const review = await this.reviewModel.findById({_id:  id});
+    if(!review || review.isDeleted){
+      throw new NotFoundException("Dữ liệu không tồn tại");
+    }
+    return review;
   }
 
   update(id: number, updateReviewDto: UpdateReviewDto) {

@@ -2,24 +2,28 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { IUser } from 'src/users/users.interface';
+import { ResponseMessage, User } from 'src/decorator/customize';
 
 @Controller('review')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
   @Post()
-  create(@Body() createReviewDto: CreateReviewDto) {
-    return this.reviewService.create(createReviewDto);
+  @ResponseMessage("Create review success")
+  createReviewController(@Body() createReviewDto: CreateReviewDto, @User() user: IUser) {
+    return this.reviewService.createReviewService(createReviewDto, user);
   }
 
   @Get()
   findAll() {
-    return this.reviewService.findAll();
+    return this.reviewService.getAllReviewService();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reviewService.findOne(+id);
+  @ResponseMessage("Fetch review by id success")
+  findOneReviewController(@Param('id') id: string) {
+    return this.reviewService.findOneReviewService(id);
   }
 
   @Patch(':id')
