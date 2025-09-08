@@ -2,14 +2,17 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CouponService } from './coupon.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from 'src/users/users.interface';
 
 @Controller('coupon')
 export class CouponController {
   constructor(private readonly couponService: CouponService) {}
 
   @Post()
-  create(@Body() createCouponDto: CreateCouponDto) {
-    return this.couponService.create(createCouponDto);
+  @ResponseMessage("Create coupon success")
+  createCouponController(@Body() createCouponDto: CreateCouponDto, @User() user: IUser) {
+    return this.couponService.createCoponService(createCouponDto, user);
   }
 
   @Get()

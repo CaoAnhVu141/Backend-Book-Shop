@@ -9,16 +9,19 @@ export class Coupon {
     @Prop()
     name: string;
 
-    @Prop()
+    @Prop({ required: true })
+    code: string;
+
+    @Prop({ required: true })
     discounType: string;
 
-    @Prop()
-    discounValue: string;
+    @Prop({ required: true })
+    discounValue: number;
 
-    @Prop()
+    @Prop({ required: true })
     startDate: Date;
 
-    @Prop()
+    @Prop({ required: true })
     endDate: Date;
 
     @Prop()
@@ -54,4 +57,4 @@ export class Coupon {
     @Prop()
     deletedAt: Date;
 }
-export const CounponSchema = SchemaFactory.createForClass(Coupon);
+export const CouponSchema = SchemaFactory.createForClass(Coupon);
