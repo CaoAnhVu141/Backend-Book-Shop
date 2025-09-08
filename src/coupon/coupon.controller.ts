@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CouponService } from './coupon.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
@@ -7,7 +7,7 @@ import { IUser } from 'src/users/users.interface';
 
 @Controller('coupon')
 export class CouponController {
-  constructor(private readonly couponService: CouponService) {}
+  constructor(private readonly couponService: CouponService) { }
 
   @Post()
   @ResponseMessage("Create coupon success")
@@ -16,13 +16,17 @@ export class CouponController {
   }
 
   @Get()
-  findAll() {
-    return this.couponService.findAll();
+  @ResponseMessage("Fetch list coupon success")
+  getAllCouponController(@Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string) {
+    return this.couponService.getAllCouponService(+currentPage, +limit, qs);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.couponService.findOne(+id);
+  @ResponseMessage("Fetch coupon by id success")
+  findOneCouponController(@Param('id') id: string) {
+    return this.couponService.findOneCouponService(id);
   }
 
   @Patch(':id')
