@@ -14,9 +14,6 @@ export class UpdateBookDto extends PartialType(CreateBookDto) {
     @IsNotEmpty({ message: "Giá sách không được để trống" })
     price: number;
 
-    @IsNumber()
-    @IsNotEmpty({ message: "Số lượng tồn sách không được để trống" })
-    stock: number;
 
     @IsString({ message: "Tác giá phải một string" })
     @IsNotEmpty({ message: "Tên tác giả sách không được để trống" })

@@ -15,8 +15,6 @@ export class Book {
     @Prop({required: true})
     price: number;
 
-    @Prop({ required: true })
-    stock: number;
 
     @Prop({ type: mongoose.Schema.Types.ObjectId })
     author_id: mongoose.Types.ObjectId;

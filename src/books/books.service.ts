@@ -16,10 +16,10 @@ export class BooksService {
     ) { }
 
   async createBookService(createBookDto: CreateBookDto, user: IUser) {
-    const {name,description,price,stock, author_id,category_id} = createBookDto;
+    const {name,description,price, author_id,category_id} = createBookDto;
     
     let book = await this.bookModel.create({
-      name,description,price,stock,author_id,category_id,
+      name,description,price,author_id,category_id,
       createdBy: {
         _id: user._id,
         email: user.email
