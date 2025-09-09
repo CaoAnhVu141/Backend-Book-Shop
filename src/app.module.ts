@@ -22,6 +22,7 @@ import { InventoryModule } from './inventory/inventory.module';
 import { ReviewModule } from './review/review.module';
 import { PaymentModule } from './payment/payment.module';
 import { CouponModule } from './coupon/coupon.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -41,7 +42,7 @@ import { CouponModule } from './coupon/coupon.module';
       isGlobal: true
     }),
 
-    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule, RolesModule, FileExcelModule, WarehouseModule, InventoryModule, ReviewModule, PaymentModule, CouponModule],
+    AuthModule, UsersModule, FilesModule, BooksModule, CategoriesModule, AuthorsModule, OrdersModule, OrderItemsModule, OrderHistoryModule, FavoriteModule, RolesModule, FileExcelModule, WarehouseModule, InventoryModule, ReviewModule, PaymentModule, CouponModule, CartModule],
   controllers: [AppController],
   providers: [AppService,
   //   {
