@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,6 +18,16 @@ export class CouponService {
 
   async createCoponService(createCouponDto: CreateCouponDto, user: IUser) {
     const {name, code, discounType, discounValue, startDate, endDate, status} = createCouponDto;
+    const currentDay = new Date();
+    const checkStartDay = new Date(startDate);
+    const checkEndDate = new Date(endDate);
+    if(checkStartDay < currentDay)
+    {
+      throw new BadRequestException("Ngày tạo phải lớn hơn hoặc bằng ngày hiện tại");
+    }
+    if(checkStartDay > checkEndDate){
+      throw new BadRequestException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
+    }
     const coupon = await this.couponModule.create({
       name, code, discounType,discounValue,startDate,endDate,status,
       createdBy: {
