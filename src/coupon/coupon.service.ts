@@ -7,6 +7,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
 import { start } from 'repl';
+import { Roles } from 'src/decorator/customize';
 
 @Injectable()
 export class CouponService {
@@ -16,25 +17,25 @@ export class CouponService {
     private couponModule: SoftDeleteModel<CouponDocument>
   ) { }
 
+  @Roles("Admin")
   async createCoponService(createCouponDto: CreateCouponDto, user: IUser) {
-    const {name, code, discounType, discounValue, startDate, endDate, status} = createCouponDto;
+    const { name, code, discounType, discounValue, startDate, endDate, status } = createCouponDto;
     const currentDay = new Date();
     const checkStartDay = new Date(startDate);
     const checkEndDate = new Date(endDate);
-    if(checkStartDay < currentDay)
-    {
+    if (checkStartDay < currentDay) {
       throw new BadRequestException("Ngày tạo phải lớn hơn hoặc bằng ngày hiện tại");
     }
-    if(checkStartDay > checkEndDate){
+    if (checkStartDay > checkEndDate) {
       throw new BadRequestException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
     }
 
-    const checkCode = await this.couponModule.findOne({code: code});
-    if(checkCode.code){
+    const checkCode = await this.couponModule.findOne({ code: code });
+    if (checkCode.code) {
       throw new BadRequestException(`Mã ${checkCode.code} đã được sử dụng`);
     }
     const coupon = await this.couponModule.create({
-      name, code, discounType,discounValue,startDate,endDate,status,
+      name, code, discounType, discounValue, startDate, endDate, status,
       createdBy: {
         _id: user._id,
         email: user.email
@@ -73,18 +74,33 @@ export class CouponService {
   }
 
   async findOneCouponService(id: string) {
-    const coupon = await this.couponModule.findById({_id: id});
-    if(!coupon || coupon.isDeleted){
+    const coupon = await this.couponModule.findById({ _id: id });
+    if (!coupon || coupon.isDeleted) {
       throw new NotFoundException("Dữ liệu không tồn tại");
-    } 
+    }
     return coupon;
   }
 
+  ///@todo update
   update(id: number, updateCouponDto: UpdateCouponDto) {
     return `This action updates a #${id} coupon`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} coupon`;
+  async removeCouponService(id: string, user: IUser) {
+    const coupon = await this.couponModule.findById({_id: id});
+    if (!coupon || coupon.isDeleted) {
+      throw new NotFoundException("Dữ liệu không tồn tại");
+    }
+    await this.couponModule.updateOne({
+      _id: id,
+    },
+      {
+        deletedBy: {
+          _id: user._id,
+          email: user.email
+        }
+      }
+    );
+    return this.couponModule.softDelete({ _id: id });
   }
 }

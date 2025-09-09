@@ -35,7 +35,8 @@ export class CouponController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.couponService.remove(+id);
+  @ResponseMessage("Delete coupon success")
+  removeCouponController(@Param('id') id: string, @User() user: IUser) {
+    return this.couponService.removeCouponService(id, user);
   }
 }
