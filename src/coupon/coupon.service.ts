@@ -28,6 +28,11 @@ export class CouponService {
     if(checkStartDay > checkEndDate){
       throw new BadRequestException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
     }
+
+    const checkCode = await this.couponModule.findOne({code: code});
+    if(checkCode.code){
+      throw new BadRequestException(`Mã ${checkCode.code} đã được sử dụng`);
+    }
     const coupon = await this.couponModule.create({
       name, code, discounType,discounValue,startDate,endDate,status,
       createdBy: {
