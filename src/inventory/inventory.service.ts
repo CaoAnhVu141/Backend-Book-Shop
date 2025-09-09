@@ -6,21 +6,40 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { Inventory, InventoryDocument } from './schemas/inventory.schema';
 import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
+import { Book, BookDocument } from 'src/books/schemas/book.schema';
+import { Warehouse, WarehouseDocument } from 'src/warehouse/schemas/warehouse.schema';
 
 @Injectable()
 export class InventoryService {
 
   constructor(
     @InjectModel(Inventory.name)
-    private inventoryModel: SoftDeleteModel<InventoryDocument>
+    private inventoryModel: SoftDeleteModel<InventoryDocument>,
+
+    @InjectModel(Book.name)
+    private bookModel: SoftDeleteModel<BookDocument>,
+
+    @InjectModel(Warehouse.name)
+    private warehouseModel: SoftDeleteModel<WarehouseDocument>
+
   ) { }
 
-  async createInventoryService(createInventoryDto: CreateInventoryDto, user: IUser) {
-    const {
-      book, warehouse, quantity } = createInventoryDto;
+  async createInventoryService(createInventoryDto: CreateInventoryDto, user: IUser)
+   {
+    const {book: bookName, warehouse: warehouseName, quantity } = createInventoryDto;
+
+    const dataBook = await this.bookModel.findOne({name: bookName});
+    if(!dataBook || dataBook.isDeleted){
+      throw new NotFoundException(`Dữ liệu sách không tồn tại`);
+    }
+
+    const dataWarehouse = await this.warehouseModel.findOne({name: warehouseName});
+    if(!dataWarehouse || dataWarehouse.isDeleted){
+      throw new NotFoundException(`Dữ liệu kho không tồn tại`);
+    }
 
     const inventory = await this.inventoryModel.create({
-      book, warehouse, quantity,
+      book: dataBook._id, warehouse: dataWarehouse._id, quantity,
       createdBy: {
         _id: user._id,
         email: user.email,
@@ -42,7 +61,10 @@ export class InventoryService {
       .skip(offset)
       .limit(defaultLimit)
       .sort(sort as any)
-      .populate(population)
+      .populate([
+        { path: "book", select: { name: 1 } },
+        { path: "warehouse", select: { name: 1 } }
+      ])
       .exec();
     return {
       meta: {
@@ -56,9 +78,11 @@ export class InventoryService {
   }
 
   async findOneInventoryService(id: string) {
-    const inventory = await this.inventoryModel.findOne({ _id: id });
+    const inventory = await this.inventoryModel.findById({ _id: id }).populate({ path: "book", select: { name: 1 } }).
+    populate({ path: "warehouse", select: { name: 1 } });
+    console.log("check inventory: ", inventory);
     if (!inventory || inventory.isDeleted) {
-      throw new NotFoundException("Dữ liệu không tồn tại");
+      throw new NotFoundException("Dữ liệu tồn kho không tồn tại");
     }
     return inventory;
   }
