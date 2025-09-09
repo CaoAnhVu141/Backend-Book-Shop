@@ -1,15 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { CouponService } from './coupon.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { ResponseMessage, Roles, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
+import { RolesGuard } from 'src/guard/roles.guard';
 
 @Controller('coupon')
+@UseGuards(RolesGuard)
 export class CouponController {
   constructor(private readonly couponService: CouponService) { }
 
   @Post()
+  @Roles("Admin")
   @ResponseMessage("Create coupon success")
   createCouponController(@Body() createCouponDto: CreateCouponDto, @User() user: IUser) {
     return this.couponService.createCoponService(createCouponDto, user);

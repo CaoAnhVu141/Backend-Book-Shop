@@ -16,8 +16,4 @@ export class CreateCartDto {
 
     @IsNotEmpty()
     discount: number;
-
-    @IsNotEmpty()
-    totalPrice: number;
-
 }

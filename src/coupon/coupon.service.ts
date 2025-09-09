@@ -17,7 +17,6 @@ export class CouponService {
     private couponModule: SoftDeleteModel<CouponDocument>
   ) { }
 
-  @Roles("Admin")
   async createCoponService(createCouponDto: CreateCouponDto, user: IUser) {
     const { name, code, discounType, discounValue, startDate, endDate, status } = createCouponDto;
     const currentDay = new Date();
@@ -31,7 +30,7 @@ export class CouponService {
     }
 
     const checkCode = await this.couponModule.findOne({ code: code });
-    if (checkCode.code) {
+    if (checkCode) {
       throw new BadRequestException(`Mã ${checkCode.code} đã được sử dụng`);
     }
     const coupon = await this.couponModule.create({

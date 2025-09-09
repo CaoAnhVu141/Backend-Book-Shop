@@ -2,14 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
+import { ResponseMessage } from 'src/decorator/customize';
 
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @Post()
-  create(@Body() createCartDto: CreateCartDto) {
-    return this.cartService.create(createCartDto);
+  @ResponseMessage("Add to cart success")
+  addToCartController(@Body() createCartDto: CreateCartDto) {
+    return this.cartService.addToCartService(createCartDto);
   }
 
   @Get()
