@@ -6,6 +6,7 @@ import { Cart, CartDocument } from './schemas/cart.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { Book, BookDocument } from 'src/books/schemas/book.schema';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
+import { Inventory, InventoryDocument } from 'src/inventory/schemas/inventory.schema';
 
 @Injectable()
 export class CartService {
@@ -19,6 +20,9 @@ export class CartService {
 
     @InjectModel(User.name)
     private userModule: SoftDeleteModel<UserDocument>,
+
+    @InjectModel(Inventory.name)
+    private inventoryModule: SoftDeleteModel<InventoryDocument>,
   ) { }
 
   async addToCartService(createCartDto: CreateCartDto) {
@@ -28,6 +32,13 @@ export class CartService {
     if(!dataBook || dataBook.isDeleted){
       throw new BadRequestException("Dữ liệu sách không tồn tại");
     }
+
+    // check quantity in inventory
+    const dataInventory = await this.inventoryModule.findOne({book: dataBook._id});
+    console.log("check inventory quantity: ", dataInventory.quantity);
+    if (!dataInventory || dataInventory.quantity < quantity) {
+    throw new BadRequestException("Số lượng sách trong kho không đủ");
+  }
 
     const calculatedTotalPrice = price * quantity * (1 - discount / 100);
 
