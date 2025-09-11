@@ -33,7 +33,7 @@ export class Order {
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Coupon' })
     coupon: mongoose.Schema.Types.ObjectId;
 
-    @Prop({ required: true, enum: ['Shipped', 'In Transit', 'Delivered'] })
+    @Prop({ required: true, enum: ['Not Shipped', 'Shipped', 'In Transit', 'Delivered'] })
     shippingStatus: string;
 
     @Prop({
