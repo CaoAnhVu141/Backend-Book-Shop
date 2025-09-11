@@ -17,7 +17,6 @@ export class CreateOrderItemDto {
     @IsNotEmpty({message: "Giá không được để trống"})
     price: number;
 
-
     discount: number;
 
     @IsNotEmpty({message: "Tổng tiền không được để trống"})
