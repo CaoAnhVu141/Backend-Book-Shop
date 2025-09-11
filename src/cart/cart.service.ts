@@ -35,7 +35,6 @@ export class CartService {
 
     // check quantity in inventory
     const dataInventory = await this.inventoryModule.findOne({book: dataBook._id});
-    console.log("check inventory quantity: ", dataInventory.quantity);
     if (!dataInventory || dataInventory.quantity < quantity) {
     throw new BadRequestException("Số lượng sách trong kho không đủ");
   }
