@@ -26,7 +26,6 @@ export class CreateOrderDto {
     @IsNotEmpty({message: "Phương thức thanh toán không được để trống"})
     payment: string; /// phương thức thanh toán
 
-    
     coupon: string;
 
     @IsNotEmpty({message: "Trạng thái vận chuyển không được để trống"})
