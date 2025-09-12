@@ -16,7 +16,7 @@ export class OrderItem {
     nameBook: string;
 
     @Prop({ required: true })
-    quantity: number; // số lượng sách
+    totalQuantity: number; // số lượng sách
 
     @Prop({ required: true })
     price: number;
@@ -25,7 +25,7 @@ export class OrderItem {
     discount: number;
 
     @Prop({ required: true })
-    totalPrice: number;
+    totalAmount: number;
 
     @Prop({ default: Date.now })
     createdAt: Date;

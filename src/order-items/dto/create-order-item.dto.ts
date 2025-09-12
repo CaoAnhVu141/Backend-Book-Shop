@@ -12,17 +12,16 @@ export class CreateOrderItemDto {
     nameBook: string;
 
     @IsNotEmpty({message: "Số lượng không được để trống"})
-    quantity: number;
+    totalQuantity: number;
 
-    @IsNotEmpty({message: "Giá không được để trống"})
+    @IsNotEmpty({message: "Giá không được để trống"}) // giá từng cuốn
     price: number;
 
     discount: number;
 
-    @IsNotEmpty({message: "Tổng tiền không được để trống"})
-    totalPrice: number;
+    /// tổng tiền sách
+    totalAmount: number;
 
     @IsNotEmpty({message: "Ngày tạo không được để trống"})
     createdAt: Date;
-
 }

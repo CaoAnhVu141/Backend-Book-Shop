@@ -1,8 +1,8 @@
 import { IsNotEmpty } from "class-validator";
+import { CreateOrderItemDto } from "src/order-items/dto/create-order-item.dto";
 
 export class CreateOrderDto {
 
-    @IsNotEmpty({message: "Mã đơn hàng không được để trống"})
     orderCode: string;
 
     @IsNotEmpty({message: "User không được để trống"})
@@ -11,8 +11,8 @@ export class CreateOrderDto {
     @IsNotEmpty({message: "Địa chỉ không được để trống"})
     address: string;
 
-    @IsNotEmpty({message: "Tổng tiền không được để trống"})
-    totalAmount: number;
+    // @IsNotEmpty({message: "Tiền không được để trống"})
+    // price: number;
     
     @IsNotEmpty({message: "Tổng số lượng không được để trống"})
     totalQuantity: number;
@@ -37,4 +37,6 @@ export class CreateOrderDto {
     @IsNotEmpty({message: "Trạng thái thanh toán không được để trống"})
     paymentStatus: string;
 
+    @IsNotEmpty({message: "Danh sách sản phẩm không được để trống"})
+    items_order: CreateOrderItemDto[];
 }

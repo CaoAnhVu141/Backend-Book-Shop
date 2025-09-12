@@ -11,6 +11,8 @@ export class CreateOrderHistoryDto {
     @IsNotEmpty({message: "Ngày cập nhật không được để trống"})
     updateDate: Date;
 
+    note: string;
+
     @IsNotEmpty({message: "Ngày giao không được để trống"})
     deliveryDate: Date;
 }

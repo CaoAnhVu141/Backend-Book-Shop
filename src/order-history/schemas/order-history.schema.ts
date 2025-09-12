@@ -22,5 +22,4 @@ export class OrderHistory {
     deliveryDate: Date;
 
 }
-
 export const OrderHistorySchema = SchemaFactory.createForClass(OrderHistory);

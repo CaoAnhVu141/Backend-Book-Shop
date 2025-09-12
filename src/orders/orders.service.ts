@@ -6,6 +6,7 @@ import { Order, OrderDocument } from './schemas/order.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { OrderItem, OrderItemDocument } from 'src/order-items/schemas/order-item.shema';
 import { OrderHistory, OrderHistoryDocument } from 'src/order-history/schemas/order-history.schema';
+import { Connection } from 'mongoose';
 
 @Injectable()
 export class OrdersService {
@@ -19,24 +20,86 @@ export class OrdersService {
 
     @InjectModel(OrderHistory.name)
     private orderHistoryModule: SoftDeleteModel<OrderHistoryDocument>,
-  ){}
+
+  ) { }
 
 
   /// function create code order
-  createCodeOrder(){
+  createCodeOrder() {
     return `ORD${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
   }
 
   async createOrderService(createOrderDto: CreateOrderDto) {
 
-    const {orderCode= this.createCodeOrder(), user, address,totalAmount,totalQuantity,orderDate,discountAmount,payment,coupon,shippingStatus,orderStatus,paymentStatus} = createOrderDto;
+    const session = await this.orderModule.db.startSession();
 
-    // await this.orderModule.create({
-    //   orderCode: orderCode,user: user,  
-    // })
+    try {
 
+      return await session.withTransaction(async () => {
+        const { orderCode = this.createCodeOrder(), user, address, orderDate = new Date(), discountAmount, payment, coupon, shippingStatus = 'Not Shipped', orderStatus = 'Pending', paymentStatus, items_order } = createOrderDto;
 
-    return 'This action adds a new order';
+        /// tính totalAmount and totalQuantity
+        let totalAmount = 0;
+        let totalQuantity = 0;
+
+        items_order.forEach(item => {
+          totalAmount += item.totalAmount
+          totalQuantity += item.totalQuantity;
+        });
+
+        //discount 
+        totalAmount = totalAmount - discountAmount;
+
+        //create table order
+        const orders = await this.orderModule.create([{
+          orderCode,
+          user,
+          address,
+          orderDate,
+          totalAmount,
+          totalQuantity,
+          payment,
+          coupon,
+          shippingStatus,
+          orderStatus,
+          paymentStatus,
+        }], {session});
+
+        //create table order_items
+        const orderItems = items_order.map(item => ({
+          order: orders[0]._id,
+          book: item.book,
+          nameBook: item.nameBook,
+          totalQuantity: item.totalQuantity,
+          price: item.price,
+          discount: item.discount,
+          totalAmount: item.totalAmount,
+          createdAt: item.createdAt,
+        }));
+
+        await this.orderItemModule.create(orderItems, {session});
+
+        //create table order_histories
+         await this.orderHistoryModule.create([{
+          order: orders[0]._id,
+          status: orderStatus,
+          updateDate: new Date(),
+          note: "Thành công tạo đơn hàng",
+          deliveryDate: new Date(),
+        }], {session});
+
+        return {
+                success: true,
+                order: orders[0],
+                message: 'Đặt hàng thành công'
+            };
+      });
+    } catch (error) {
+      throw new Error(`Lỗi khi tạo đơn hàng: ${error.message}`);
+    }
+    finally {
+      await session.endSession();
+    }
   }
 
   findAll() {
