@@ -80,13 +80,26 @@ export class CouponService {
     return coupon;
   }
 
-  ///@todo update
-  update(id: number, updateCouponDto: UpdateCouponDto) {
-    return `This action updates a #${id} coupon`;
+
+  async updateCouponService(id: string, updateCouponDto: UpdateCouponDto, byUser: IUser) {
+    const coupon = await this.couponModule.findById({ _id: id });
+    console.log("check coupon: ", coupon);
+    if (!coupon || coupon.isDeleted) {
+      throw new NotFoundException("Dữ liệu không tồn tại");
+    }
+   return await this.couponModule.updateOne({
+      _id: id
+    }, {
+      ...updateCouponDto,
+      updatedBy: {
+        _id: byUser._id,
+        email: byUser.email
+      }
+    });
   }
 
   async removeCouponService(id: string, user: IUser) {
-    const coupon = await this.couponModule.findById({_id: id});
+    const coupon = await this.couponModule.findById({ _id: id });
     if (!coupon || coupon.isDeleted) {
       throw new NotFoundException("Dữ liệu không tồn tại");
     }

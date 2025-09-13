@@ -33,8 +33,9 @@ export class CouponController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCouponDto: UpdateCouponDto) {
-    return this.couponService.update(+id, updateCouponDto);
+  @ResponseMessage("Update coupon success")
+  updateCouponController(@Param('id') id: string, @Body() updateCouponDto: UpdateCouponDto, @User() user: IUser) {
+    return this.couponService.updateCouponService(id, updateCouponDto, user);
   }
 
   @Delete(':id')
