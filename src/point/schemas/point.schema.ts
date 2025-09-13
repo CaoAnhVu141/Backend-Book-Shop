@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 
-export type OrderItemDocument = HydratedDocument<Point>;
+export type PointDocument = HydratedDocument<Point>;
 
 @Schema({ timestamps: true })
 
