@@ -27,7 +27,7 @@ export class OrderItem {
     @Prop({ required: true })
     totalAmount: number;
 
-    @Prop({ default: Date.now })
+    @Prop({ required: true })
     createdAt: Date;
 }
 export const OrderItemSchema = SchemaFactory.createForClass(OrderItem);

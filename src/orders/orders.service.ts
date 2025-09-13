@@ -26,16 +26,17 @@ export class OrdersService {
 
   /// function create code order
   createCodeOrder() {
-    return `ORD${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
+    return `ORD${Date.now().toString().substr(-6)}${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
   }
 
   async createOrderService(createOrderDto: CreateOrderDto) {
 
     const session = await this.orderModule.db.startSession();
+    let dataOrders;
 
     try {
 
-      return await session.withTransaction(async () => {
+      await session.withTransaction(async () => {
         const { orderCode = this.createCodeOrder(), user, address, orderDate = new Date(), discountAmount, payment, coupon, shippingStatus = 'Not Shipped', orderStatus = 'Pending', paymentStatus, items_order } = createOrderDto;
 
         /// tính totalAmount and totalQuantity
@@ -63,7 +64,7 @@ export class OrdersService {
           shippingStatus,
           orderStatus,
           paymentStatus,
-        }], {session});
+        }], { session });
 
         //create table order_items
         const orderItems = items_order.map(item => ({
@@ -74,26 +75,27 @@ export class OrdersService {
           price: item.price,
           discount: item.discount,
           totalAmount: item.totalAmount,
-          createdAt: item.createdAt,
+          createdAt: new Date(),
         }));
 
-        await this.orderItemModule.create(orderItems, {session});
+        await this.orderItemModule.create(orderItems, { session });
 
         //create table order_histories
-         await this.orderHistoryModule.create([{
+        await this.orderHistoryModule.create([{
           order: orders[0]._id,
           status: orderStatus,
           updateDate: new Date(),
           note: "Thành công tạo đơn hàng",
           deliveryDate: new Date(),
-        }], {session});
+        }], { session });
 
-        return {
-                success: true,
-                order: orders[0],
-                message: 'Đặt hàng thành công'
-            };
+        dataOrders = {
+          success: true,
+          order: orders[0],
+          message: 'Đặt hàng thành công',
+        };
       });
+      return dataOrders;
     } catch (error) {
       throw new Error(`Lỗi khi tạo đơn hàng: ${error.message}`);
     }
