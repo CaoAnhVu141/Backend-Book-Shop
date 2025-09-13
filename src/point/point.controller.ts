@@ -2,14 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PointService } from './point.service';
 import { CreatePointDto } from './dto/create-point.dto';
 import { UpdatePointDto } from './dto/update-point.dto';
+import { ResponseMessage } from 'src/decorator/customize';
 
 @Controller('point')
 export class PointController {
   constructor(private readonly pointService: PointService) {}
 
   @Post()
-  create(@Body() createPointDto: CreatePointDto) {
-    return this.pointService.create(createPointDto);
+  @ResponseMessage("Get points success")
+  createPointController(@Body() createPointDto: CreatePointDto) {
+    return this.pointService.createPointService(createPointDto);
   }
 
   @Get()

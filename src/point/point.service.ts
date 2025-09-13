@@ -4,6 +4,7 @@ import { UpdatePointDto } from './dto/update-point.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Point, PointDocument } from './schemas/point.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { IUser } from 'src/users/users.interface';
 
 @Injectable()
 export class PointService {
@@ -13,8 +14,36 @@ export class PointService {
     private pointModule: SoftDeleteModel<PointDocument>
   ) { }
 
-  create(createPointDto: CreatePointDto) {
-    return 'This action adds a new point';
+  async createPointService(createPointDto: CreatePointDto) {
+
+    const { user, order = null , point = 100, source = "checkin", isActive = true, createdAt = new Date(), updatedAt = new Date() } = createPointDto;
+
+    // tính thời gian
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+    const existingCheckin = await this.pointModule.findOne({
+      user: user,
+      source: "checkin",
+      createdAt: {
+        $gte: startOfDay,
+        $lt: endOfDay
+      }
+    });
+
+    if (existingCheckin) {
+      return {
+        success: false,
+        message: 'Bạn đã checkin hôm nay rồi!',
+      };
+    }
+
+    let pointData = await this.pointModule.create({
+      user: user, order: order, point: point, source: source, isActive: isActive, createdAt: createdAt, updatedAt: updatedAt,
+    });
+
+    return pointData;
   }
 
   findAll() {

@@ -4,7 +4,6 @@ import mongoose, { HydratedDocument } from "mongoose";
 export type PointDocument = HydratedDocument<Point>;
 
 @Schema({ timestamps: true })
-
 export class Point {
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
