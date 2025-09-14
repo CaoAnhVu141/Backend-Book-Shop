@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -7,7 +7,7 @@ import { IUser } from 'src/users/users.interface';
 
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(private readonly paymentService: PaymentService) { }
 
   @Post()
   @ResponseMessage("Create payment success")
@@ -16,13 +16,17 @@ export class PaymentController {
   }
 
   @Get()
-  findAll() {
-    return this.paymentService.findAll();
+  @ResponseMessage("Fetch list payment success")
+  getAllPaymentController(@Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string) {
+    return this.paymentService.getAllPaymentService(+currentPage, +limit, qs);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.paymentService.findOne(+id);
+  @ResponseMessage("Fetch payment by id success")
+  findOnePaymentController(@Param('id') id: string) {
+    return this.paymentService.findOnePaymentService(id);
   }
 
   @Patch(':id')
@@ -31,7 +35,8 @@ export class PaymentController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.paymentService.remove(+id);
+  @ResponseMessage("Delete payment success")
+  removePaymentController(@Param('id') id: string, @User() user: IUser) {
+    return this.paymentService.removePaymentService(id, user);
   }
 }

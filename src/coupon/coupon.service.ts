@@ -83,7 +83,6 @@ export class CouponService {
 
   async updateCouponService(id: string, updateCouponDto: UpdateCouponDto, byUser: IUser) {
     const coupon = await this.couponModule.findById({ _id: id });
-    console.log("check coupon: ", coupon);
     if (!coupon || coupon.isDeleted) {
       throw new NotFoundException("Dữ liệu không tồn tại");
     }
