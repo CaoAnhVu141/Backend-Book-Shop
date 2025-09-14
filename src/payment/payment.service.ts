@@ -58,7 +58,8 @@ export class PaymentService {
   }
 
   async findOnePaymentService(id: string) {
-    const payment = await this.paymentModel.findOne({_id: id});
+    const payment = await this.paymentModel.findById({_id: id});
+    console.log("check payment: ",payment);
     if(!payment || payment.isDeleted){
       throw new BadRequestException("Dữ liệu không tồn tại");
     }
