@@ -19,7 +19,7 @@ export class BooksService {
     const {name,description,price, author,category, thumbnail, images} = createBookDto;
     
     let book = await this.bookModel.create({
-      name,description,price,author,category, thumbnail, images
+      name,description,price,author,category, thumbnail, images,
       createdBy: {
         _id: user._id,
         email: user.email
