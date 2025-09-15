@@ -15,12 +15,17 @@ export class Book {
     @Prop({required: true})
     price: number;
 
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Author' })
+    author: mongoose.Types.ObjectId;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
-    author_id: mongoose.Types.ObjectId;
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
+    category: mongoose.Types.ObjectId;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
-    category_id: mongoose.Types.ObjectId;
+    @Prop()
+    thumbnail: string;
+
+    @Prop()
+    images: string[];
 
     @Prop({ type: Object })
     createdBy: {

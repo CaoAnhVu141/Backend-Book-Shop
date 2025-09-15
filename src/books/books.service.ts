@@ -16,10 +16,10 @@ export class BooksService {
     ) { }
 
   async createBookService(createBookDto: CreateBookDto, user: IUser) {
-    const {name,description,price, author_id,category_id} = createBookDto;
+    const {name,description,price, author,category, thumbnail, images} = createBookDto;
     
     let book = await this.bookModel.create({
-      name,description,price,author_id,category_id,
+      name,description,price,author,category, thumbnail, images
       createdBy: {
         _id: user._id,
         email: user.email
@@ -43,7 +43,10 @@ export class BooksService {
       .skip(offset)
       .limit(defaultLimit)
       .sort(sort as any)
-      .populate(population)
+      // .populate([
+      //   { path: "author", select: { name: 1 } },
+      // ])
+      .populate('author', 'name')
       .exec();
 
     return {
@@ -58,7 +61,7 @@ export class BooksService {
   }
 
   async getOneBookService(id: string) {
-    const book = await this.bookModel.findById(id);
+    const book = await this.bookModel.findById(id).populate('author', 'name').exec();
     if(!book || book.isDeleted){
       throw new NotFoundException("Dữ liệu không tồn tại hoặc đã bị xóa");
     }

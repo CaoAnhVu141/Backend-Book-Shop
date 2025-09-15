@@ -84,7 +84,7 @@ export class WarehouseService {
   }
 
   async removeWareHouseService(id: string, user: IUser) {
-    const wareHouse = await this.wareHouseModel.findById({ id });
+    const wareHouse = await this.wareHouseModel.findById({_id: id });
     if (!wareHouse || wareHouse.isDeleted) {
       throw new NotFoundException("Dữ liệu không tồn tại");
     }
