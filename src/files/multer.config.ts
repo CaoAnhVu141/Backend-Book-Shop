@@ -46,7 +46,6 @@ export class MulterConfigService implements MulterOptionsFactory {
                 // },
                 destination: (req, file, cb) => {
                     const folder = req?.query?.type ?? "default";
-                    console.log("folder from query: ", folder);
                     this.ensureExists(`public/images/${folder}`);
                     cb(null, join(this.getRootPath(), `public/images/${folder}`));
                 },
