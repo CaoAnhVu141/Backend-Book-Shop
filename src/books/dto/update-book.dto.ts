@@ -17,9 +17,9 @@ export class UpdateBookDto extends PartialType(CreateBookDto) {
 
     @IsString({ message: "Tác giá phải một string" })
     @IsNotEmpty({ message: "Tên tác giả sách không được để trống" })
-    author_id: string;
+    author: string;
 
     @IsString({ message: "Tác giá phải một string" })
     @IsNotEmpty({ message: "Danh mục sách không được để trống" })
-    category_id: string;
+    category: string;
 }

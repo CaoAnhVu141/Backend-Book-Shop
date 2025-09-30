@@ -37,10 +37,18 @@ export class MulterConfigService implements MulterOptionsFactory {
     createMulterOptions(): MulterModuleOptions {
         return {
             storage: diskStorage({
+                // destination: (req, file, cb) => {
+                // // const folder = req?.body?.type ?? "default";
+                // const folder = req?.body?.type || req?.query?.type || req?.params?.type || "default";
+                // console.log("folder: ", folder);
+                // this.ensureExists(`public/images/${folder}`);
+                // cb(null, join(this.getRootPath(), `public/images/${folder}`));
+                // },
                 destination: (req, file, cb) => {
-                    const folder = req?.headers?.folder_type ?? "default";
+                    const folder = req?.query?.type ?? "default";
+                    console.log("folder from query: ", folder);
                     this.ensureExists(`public/images/${folder}`);
-                    cb(null, join(this.getRootPath(), `public/images/${folder}`))
+                    cb(null, join(this.getRootPath(), `public/images/${folder}`));
                 },
                 filename: (req, file, cb) => {
                     //get image extension
@@ -65,7 +73,7 @@ export class MulterConfigService implements MulterOptionsFactory {
                     cb(null, true);
             },
             limits: {
-                fileSize: 1024 * 1024 * 1 // 1MB
+                fileSize: 1024 * 1024 * 10
             }
         };
     }

@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { RolesGuard } from './guard/roles.guard';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
 
@@ -31,7 +32,6 @@ async function bootstrap() {
       "origin":true,
       "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
       "preflightContinue": false,
-      // credentials: true
       credentials: true
     }
   );
@@ -45,6 +45,9 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: ['1', '2'] //v1, v2
   });
+  // Đặt giới hạn kích thước cho các yêu cầu body
+  app.use(bodyParser.json({ limit: '10mb' })); 
+  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
   await app.listen(configService.get<string>("PORT"));
 }
 bootstrap();

@@ -24,5 +24,5 @@ export class CreateBookDto {
     thumbnail: string;
 
     @IsNotEmpty({message: "Images không được để trống"})
-    images: string;
+    images: string[];
 }
